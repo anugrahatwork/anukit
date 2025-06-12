@@ -1,5 +1,6 @@
 package com.anugrahatwork.anukit;
 
+import com.anugrahatwork.anukit.result.Result;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,53 +8,77 @@ import static org.junit.jupiter.api.Assertions.*;
 class PipeTest {
 
     @Test
-    void testPipe_singleTransformation() {
-        Pipe<String> pipe = Pipe.of("hello")
-                .then(String::toUpperCase);
-
-        assertEquals("HELLO", pipe.getValue());
-    }
-
-    @Test
-    void testPipe_multipleTransformations() {
-        String result = Pipe.of("anu")
-                .then(String::toUpperCase)
-                .then(str -> str + "KIT")
-                .then(str -> str.replace("U", "Ü"))
-                .getValue();
-
-        assertEquals("ANÜKIT", result);
-    }
-
-    @Test
-    void testPipe_numericOperations() {
-        Pipe<Integer> pipe = Pipe.of(5)
-                .then(n -> n * 2)
-                .then(n -> n + 3);
-
-        assertEquals(13, pipe.getValue());
-    }
-
-    @Test
-    void testPipe_mutateValueDirectly() {
+    void testOf_withInitialValue() {
         Pipe<String> pipe = Pipe.of("start");
-        pipe.setValue("reset");
-
-        assertEquals("reset", pipe.getValue());
+        assertTrue(pipe.getResult().isOk());
+        assertEquals("start", pipe.getResult().unwrapOrThrow());
     }
 
     @Test
-    void testPipeTransformer_interface() {
-        Pipe.PipeTransformer<String> reverse = s -> new StringBuilder(s).reverse().toString();
+    void testConstructor_withCheckedSupplier_success() {
+        Pipe<Integer> pipe = new Pipe<>(() -> 42);
+        Result<Integer, Exception> result = pipe.getResult();
 
-        String result = Pipe.of("anu").then(reverse).getValue();
-
-        assertEquals("una", result);
+        assertTrue(result.isOk());
+        assertEquals(42, result.unwrapOrThrow());
     }
 
     @Test
-    void testPipe_ofFactoryMethod() {
-        Pipe<Double> pipe = Pipe.of(3.14);
-        assertEquals(3.14, pipe.getValue());
+    void testConstructor_withCheckedSupplier_failure() {
+        Pipe<Integer> pipe = new Pipe<>(() -> {
+            throw new IllegalStateException("fail");
+        });
+
+        Result<Integer, Exception> result = pipe.getResult();
+        assertTrue(result.isErr());
+        assertEquals("fail", result.getErrorMessage());
+    }
+
+    @Test
+    void testThen_chainSuccessfulTransforms() {
+        Pipe<String> pipe = Pipe.of("anu")
+                .then(String::toUpperCase)
+                .then(s -> s + "-KIT");
+
+        Result<String, Exception> result = pipe.getResult();
+        assertTrue(result.isOk());
+        assertEquals("ANU-KIT", result.unwrapOrThrow());
+    }
+
+    @Test
+    void testThen_doesNotApplyIfErrorState() {
+        Pipe<?> pipe = new Pipe<>(() -> {
+            throw new RuntimeException("boom");
+        }).then(s -> s + "extra");
+
+        Result<?, Exception> result = pipe.getResult();
+        assertTrue(result.isErr());
+        assertEquals("boom", result.getErrorMessage());
+    }
+
+    @Test
+    void testCatchError_transformsErrorState() {
+        Pipe<String> pipe = new Pipe<>(() -> {
+            throw new RuntimeException("problem");
+        });
+
+        Result<String, Exception> handled = pipe.mapResult(res -> {
+            if (res.isErr()) {
+                return "fallback";
+            }
+            return res.unwrapOrThrow();
+        });
+
+        assertTrue(handled.isOk());
+        assertEquals("fallback", handled.unwrapOrThrow());
+    }
+
+    @Test
+    void testMapResult_preservesOkState() {
+        Pipe<String> pipe = Pipe.of("ok");
+
+        Result<String, Exception> result = pipe.mapResult(Result::unwrapOrThrow);
+        assertTrue(result.isOk());
+        assertEquals("ok", result.unwrapOrThrow());
     }
 }
