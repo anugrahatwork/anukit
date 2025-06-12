@@ -20,7 +20,7 @@ class AnuKitTest {
     void testTryWrap_success() {
         Result<String, Exception> result = AnuKit.tryWrap(() -> "hello");
         assertTrue(result.isOk());
-        assertEquals("hello", result.getOk().orElse(null));
+        assertEquals("hello", result.Ok().orElse(null));
     }
 
     @Test
@@ -82,7 +82,7 @@ class AnuKitTest {
     void testTryWrapAsync_success() throws ExecutionException, InterruptedException {
         Result<String, Exception> result = AnuKit.tryWrapAsync(() -> "async-wrap-ok").get();
         assertTrue(result.isOk());
-        assertEquals("async-wrap-ok", result.getOk().orElse(null));
+        assertEquals("async-wrap-ok", result.Ok().orElse(null));
     }
 
     @Test
@@ -104,8 +104,14 @@ class AnuKitTest {
     }
 
     @Test
+    void testSafeTransformer_interface() throws Exception {
+        AnuKit.SafeModifier<String> safeFunc = (input) -> input.replace("x", "1");
+        assertEquals("123", safeFunc.apply("x23"));
+    }
+
+    @Test
     void testSafeFunction_interface() throws Exception {
-        AnuKit.SafeFunction<String, Integer> safeFunc = Integer::parseInt;
+        AnuKit.SafeTransformer<String, Integer> safeFunc = Integer::parseInt;
         assertEquals(123, safeFunc.apply("123"));
     }
 
