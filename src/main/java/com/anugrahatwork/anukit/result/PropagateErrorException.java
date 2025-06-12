@@ -1,4 +1,4 @@
-package com.anugrahatwork.anukit.result.;
+package com.anugrahatwork.anukit.result;
 
 import lombok.Getter;
 
