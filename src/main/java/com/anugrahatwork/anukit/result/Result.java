@@ -136,14 +136,14 @@ public class Result<T, E> {
     /**
      * Returns the success value as an {@link Optional}, or {@link Optional#empty()} if not successful.
      */
-    public Optional<T> getOk() {
+    public Optional<T> Ok() {
         return Optional.ofNullable(value);
     }
 
     /**
      * Returns the error value as an {@link Optional}, or {@link Optional#empty()} if not an error.
      */
-    public Optional<E> getErr() {
+    public Optional<E> Err() {
         return Optional.ofNullable(error);
     }
 
