@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import com.anugrahatwork.anukit.result.Result;
 
 /**
- * anukit.AnuKit – Functional-style helper utilities for exception-safe and asynchronous Java programming.
+ * AnuKit – Functional-style helper utilities for exception-safe and asynchronous Java programming.
  */
 public class AnuKit {
 
@@ -67,6 +67,22 @@ public class AnuKit {
             return Result.ok(supplier.get());
         } catch (Exception e) {
             return Result.err(e);
+        }
+    }
+
+    /**
+     * Executes the given function and returns a fallback value if an error occurs.
+     *
+     * @param input the input value
+     * @param fallback the fallback value if error happens
+     * @param function the function to apply
+     * @return transformed value or fallback
+     */
+    public static <T, R> R safeMap(T input, R fallback, SafeFunction<T, R> function) {
+        try {
+            return function.apply(input);
+        } catch (Exception e) {
+            return fallback;
         }
     }
 
