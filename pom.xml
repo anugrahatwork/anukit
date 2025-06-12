@@ -11,7 +11,7 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>anukit.AnuKit</name>
+    <name>AnuKit - Java Helper Toolkit</name>
     <description>Java helper toolkit for functional, async-safe, and result-based programming</description>
     <url>https://github.com/anugrahatwork/anukit</url>
 
