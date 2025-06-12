@@ -18,7 +18,6 @@ public class AnuKit {
      * A simple supplier that returns a value without throwing exceptions.
      * Similar to {@link java.util.function.Supplier}.
      */
-    @FunctionalInterface
     public interface PureSupplier<T> {
         T get();
     }
@@ -32,10 +31,18 @@ public class AnuKit {
     }
 
     /**
+     * Functional interface representing a transformation on the Pipe value.
+     */
+    @FunctionalInterface
+    public interface SafeModifier<T> {
+        T apply(T input) throws Exception;
+    }
+
+    /**
      * A function that takes input and returns a result, potentially throwing an exception.
      */
     @FunctionalInterface
-    public interface SafeFunction<T, R> {
+    public interface SafeTransformer<T, R> {
         R apply(T input) throws Exception;
     }
 
@@ -78,7 +85,7 @@ public class AnuKit {
      * @param function the function to apply
      * @return transformed value or fallback
      */
-    public static <T, R> R safeMap(T input, R fallback, SafeFunction<T, R> function) {
+    public static <T, R> R safeMap(T input, R fallback, SafeTransformer<T, R> function) {
         try {
             return function.apply(input);
         } catch (Exception e) {
@@ -123,7 +130,7 @@ public class AnuKit {
         /**
          * Applies a function to each stream item, wrapping results in {@link Result}.
          */
-        public <R> Stream<Result<R, Exception>> mapSafe(SafeFunction<T, R> mapper) {
+        public <R> Stream<Result<R, Exception>> mapSafe(SafeTransformer<T, R> mapper) {
             return stream.map(item -> tryWrap(() -> mapper.apply(item)));
         }
     }
