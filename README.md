@@ -26,7 +26,7 @@ AnuKit provides a minimal set of functional tools and abstractions inspired by R
 </repositories>
 
 <dependency>
-  <groupId>com.github.anugrahatworkE</groupId>
+  <groupId>com.github.anugrahatwork</groupId>
   <artifactId>AnuKit</artifactId>
   <version>v0.0.2</version>
 </dependency>
