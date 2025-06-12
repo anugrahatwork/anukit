@@ -17,7 +17,7 @@ class ResultTest {
         assertFalse(result.isErr());
         assertFalse(result.isNone());
 
-        assertEquals(Optional.of("Success"), result.getOk());
+        assertEquals(Optional.of("Success"), result.Ok());
         assertDoesNotThrow(() -> result.unwrapOrThrow());
         assertEquals("Success", result.unwrapOrThrow());
         assertEquals("Success", result.unwrapOrThrow("Somehow Java is broken"));
@@ -32,7 +32,7 @@ class ResultTest {
         assertFalse(result.isOk());
         assertFalse(result.isNone());
 
-        assertEquals(Optional.of(error), result.getErr());
+        assertEquals(Optional.of(error), result.Err());
         assertEquals("File error", result.getErrorMessage());
 
         RuntimeException thrown = assertThrows(RuntimeException.class, result::unwrapOrThrow);
@@ -73,7 +73,7 @@ class ResultTest {
     }
 
     @Test
-    void testGetError() {
+    void testError() {
         Exception error = new IllegalStateException("bad state");
         Result<String, Exception> result = Result.err(error);
 
@@ -81,7 +81,7 @@ class ResultTest {
     }
 
     @Test
-    void testGetErrorMessage_nonThrowable() {
+    void testErrorMessage_nonThrowable() {
         Result<String, String> result = Result.err("Simple error");
         assertEquals("Simple error", result.getErrorMessage());
     }
