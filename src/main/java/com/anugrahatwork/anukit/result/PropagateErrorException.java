@@ -22,7 +22,7 @@ public class PropagateErrorException extends RuntimeException {
      * @param error the error object (message, exception, etc.)
      */
     public PropagateErrorException(Object error) {
-        super(error != null ? error.toString() : "Unknown error");
+        super(error instanceof Throwable ? ((Throwable) error).getMessage() : error != null ? error.toString() : "Unknown error"  );
         this.error = error;
     }
 
