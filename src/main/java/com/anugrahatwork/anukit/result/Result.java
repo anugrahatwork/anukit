@@ -1,3 +1,5 @@
+package com.anugrahatwork.anukit.result;
+
 import lombok.Getter;
 
 import java.util.Optional;
@@ -6,7 +8,7 @@ import java.util.Optional;
  * A functional container that represents either a successful value ({@code Ok})
  * or an error ({@code Err}), or an uninitialized state ({@code None}).
  * <p>
- * This class is inspired by Rust’s {@code Result<T, E>} and is designed for
+ * This class is inspired by Rust’s {@code anukit.result.Result<T, E>} and is designed for
  * safer and expressive error handling in Java without using exceptions for control flow.
  *
  * @param <T> the type of the success value
@@ -18,7 +20,7 @@ public class Result<T, E> {
     private final E error;
 
     /**
-     * The current state of the {@code Result}.
+     * The current state of the {@code anukit.result.Result}.
      */
     @Getter
     private final State state;
@@ -30,7 +32,7 @@ public class Result<T, E> {
     private String message;
 
     /**
-     * Enum representing the state of the {@code Result}.
+     * Enum representing the state of the {@code anukit.result.Result}.
      */
     public enum State {
         /**
@@ -70,7 +72,7 @@ public class Result<T, E> {
      * Creates a success result.
      *
      * @param value the successful result
-     * @return a {@code Result} representing success
+     * @return a {@code anukit.result.Result} representing success
      */
     public static <T, E> Result<T, E> ok(T value) {
         return new Result<>(value, null, State.OK);
@@ -80,7 +82,7 @@ public class Result<T, E> {
      * Creates a failure result with an error.
      *
      * @param error the error object
-     * @return a {@code Result} representing error
+     * @return a {@code anukit.result.Result} representing error
      */
     public static <T, E> Result<T, E> err(E error) {
         return new Result<>(null, error, State.ERR);
@@ -91,16 +93,16 @@ public class Result<T, E> {
      *
      * @param error   the error object
      * @param message additional context or description
-     * @return a {@code Result} representing error
+     * @return a {@code anukit.result.Result} representing error
      */
     public static <T, E> Result<T, E> err(E error, String message) {
         return new Result<>(null, error, State.ERR, message);
     }
 
     /**
-     * Creates an uninitialized {@code Result}.
+     * Creates an uninitialized {@code anukit.result.Result}.
      *
-     * @return a {@code Result} in the {@code NONE} state
+     * @return a {@code anukit.result.Result} in the {@code NONE} state
      */
     public static <T, E> Result<T, E> none() {
         return new Result<>(null, null, State.NONE);
@@ -153,7 +155,7 @@ public class Result<T, E> {
      */
     public T unwrapOrThrow() {
         if (isOk()) return value;
-        if (isNone()) throw new IllegalStateException("Result is uninitialized (NONE)");
+        if (isNone()) throw new IllegalStateException("anukit.result.Result is uninitialized (NONE)");
         throw wrapToException(error);
     }
 
@@ -169,7 +171,7 @@ public class Result<T, E> {
 
         this.message = customMessage;
 
-        if (isNone()) throw new IllegalStateException("Result is uninitialized: " + customMessage);
+        if (isNone()) throw new IllegalStateException("anukit.result.Result is uninitialized: " + customMessage);
         throw wrapToException(error, customMessage);
     }
 
@@ -180,7 +182,7 @@ public class Result<T, E> {
      * @throws IllegalStateException if result is none
      */
     public E getError() {
-        if (isNone()) throw new IllegalStateException("Result is uninitialized");
+        if (isNone()) throw new IllegalStateException("anukit.result.Result is uninitialized");
         return error;
     }
 
@@ -189,7 +191,7 @@ public class Result<T, E> {
      * Supports {@link Throwable}, {@link String}, or custom types.
      */
     public String getErrorMessage() {
-        if (isNone()) return "Result is uninitialized";
+        if (isNone()) return "anukit.result.Result is uninitialized";
         if (error instanceof Throwable) return ((Throwable) error).getMessage();
         return error != null ? error.toString() : null;
     }
@@ -198,7 +200,7 @@ public class Result<T, E> {
      * Attaches a contextual message to the result (useful for tracing).
      *
      * @param message the message to attach
-     * @return the current {@code Result} instance
+     * @return the current {@code anukit.result.Result} instance
      */
     public Result<T, E> intercept(String message) {
         this.message = message;

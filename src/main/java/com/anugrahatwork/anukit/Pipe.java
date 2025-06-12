@@ -1,3 +1,5 @@
+package com.anugrahatwork.anukit;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +17,7 @@ public class Pipe<T> {
     private T value;
 
     /**
-     * Creates a new Pipe with the initial value.
+     * Creates a new anukit.Pipe with the initial value.
      *
      * @param value the value to wrap
      */
@@ -28,14 +30,14 @@ public class Pipe<T> {
      * <p>
      * Example:
      * <pre>
-     *     Pipe.of("hello")
+     *     anukit.Pipe.of("hello")
      *         .then(str -> str.toUpperCase())
      *         .then(str -> str + " world")
      *         .getValue(); // "HELLO world"
      * </pre>
      *
      * @param transformer a function to apply to the current value
-     * @return the current Pipe with updated value
+     * @return the current anukit.Pipe with updated value
      */
     public Pipe<T> then(PipeTransformer<T> transformer) {
         this.value = transformer.apply(value);
@@ -47,14 +49,14 @@ public class Pipe<T> {
      *
      * @param value the value to wrap
      * @param <T>   the type
-     * @return a new Pipe instance
+     * @return a new anukit.Pipe instance
      */
     public static <T> Pipe<T> of(T value) {
         return new Pipe<>(value);
     }
 
     /**
-     * Functional interface representing a transformation on the Pipe value.
+     * Functional interface representing a transformation on the anukit.Pipe value.
      */
     @FunctionalInterface
     public interface PipeTransformer<T> {

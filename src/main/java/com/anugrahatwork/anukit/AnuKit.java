@@ -1,11 +1,14 @@
+package com.anugrahatwork.anukit;
+
 import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+import com.anugrahatwork.anukit.result.Result;
 
 /**
- * AnuKit – Functional-style helper utilities for exception-safe and asynchronous Java programming.
+ * anukit.AnuKit – Functional-style helper utilities for exception-safe and asynchronous Java programming.
  */
 public class AnuKit {
 
