@@ -31,9 +31,9 @@
 
     <developers>
         <developer>
-            <id>anugrah</id>
-            <name>Anugrah</name>
-            <url>https://github.com/anugrahatwork</url>
+            <id>anugrahatwork</id>
+            <name>Anugrah Zeputra</name>
+            <url>https://github.com/anugrahzeputra</url>
         </developer>
     </developers>
 
@@ -43,6 +43,12 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
