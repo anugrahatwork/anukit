@@ -1,65 +1,74 @@
 package com.anugrahatwork.anukit;
 
+import com.anugrahatwork.anukit.result.Result;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
- * A lightweight mutable container for chaining transformations fluently.
+ * A fluent wrapper for safely applying transformations to a value,
+ * capturing success and failure as a {@link Result}.
  * <p>
  * Inspired by functional programming pipes and method chaining patterns.
  *
- * @param <T> the wrapped value type
+ * @param <T> the type of the wrapped value
  */
 @Getter
-@Setter
 public class Pipe<T> {
-
-    private T value;
+    /**
+     * The current {@link Result} representing the state of transformation.
+     */
+    private Result<T, Exception> result;
 
     /**
-     * Creates a new Pipe with the initial value.
+     * Private constructor for static factory.
      *
-     * @param value the value to wrap
+     * @param value the initial value
      */
-    public Pipe(T value) {
-        this.value = value;
+    private Pipe(T value) {
+        this.result = Result.ok(value);
     }
 
     /**
-     * Applies a transformation to the value and returns the updated pipe.
-     * <p>
-     * Example:
-     * <pre>
-     *     Pipe.of("hello")
-     *         .then(str -> str.toUpperCase())
-     *         .then(str -> str + " world")
-     *         .getValue(); // "HELLO world"
-     * </pre>
+     * Constructs a Pipe from a {@link AnuKit.CheckedSupplier}, wrapping exceptions into a {@link Result}.
      *
-     * @param transformer a function to apply to the current value
-     * @return the current Pipe with updated value
+     * @param supplier a supplier that may throw
      */
-    public Pipe<T> then(PipeTransformer<T> transformer) {
-        this.value = transformer.apply(value);
+    public Pipe(AnuKit.CheckedSupplier<T> supplier) {
+        this.result = AnuKit.tryWrap(supplier);
+    }
+
+    /**
+     * Applies a transformation to the value if the current state is {@code ok()},
+     * and updates the result.
+     *
+     * @param modifier a function to apply to the current value
+     * @return this Pipe (for chaining)
+     */
+    public Pipe<T> then(AnuKit.Modifier<T> modifier) {
+        if (result.isOk()) {
+            this.result = AnuKit.tryWrap(() -> modifier.modify(this.result.unwrapOrThrow()));
+        }
         return this;
     }
 
     /**
-     * Static factory method for cleaner instantiation.
+     * Applies a final transformation to the internal {@link Result}, producing a new {@link Result}.
      *
-     * @param value the value to wrap
-     * @param <T>   the type
+     * @param transformer function to transform the result
+     * @param <R> return type
+     * @return new transformed {@link Result}
+     */
+    public <R> Result<R, Exception> mapResult(AnuKit.Transformer<Result<T, Exception>, R> transformer) {
+        return AnuKit.tryWrap(() -> transformer.transform(result));
+    }
+
+    /**
+     * Creates a Pipe from a raw value.
+     *
+     * @param value the initial value
+     * @param <T> the value type
      * @return a new Pipe instance
      */
     public static <T> Pipe<T> of(T value) {
         return new Pipe<>(value);
-    }
-
-    /**
-     * Functional interface representing a transformation on the Pipe value.
-     */
-    @FunctionalInterface
-    public interface PipeTransformer<T> {
-        T apply(T value);
     }
 }
