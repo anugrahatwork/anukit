@@ -44,13 +44,16 @@ class ResultTest {
     @Test
     void testErrResult_withOnErrorHandling() {
         AtomicBoolean isErrorHandled = new AtomicBoolean(false);
-        Result.err(new IllegalArgumentException("Invalid"), "Custom message").onError((error) -> {
-            if(Objects.nonNull(error)) {
-                isErrorHandled.set(true);
-            }
-        });
+        Result<String, Exception> result = Result
+                .<String, Exception>err(new IllegalArgumentException("Invalid"))
+                .onError((error) -> {
+                    if(Objects.nonNull(error)) {
+                        isErrorHandled.set(true);
+                    }
+                });
 
         assertTrue(isErrorHandled.get());
+        assertTrue(result.isErr());
     }
 
     @Test
