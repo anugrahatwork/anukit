@@ -8,7 +8,7 @@
 
     <groupId>com.anugrahatwork</groupId>
     <artifactId>anukit</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <packaging>jar</packaging>
 
     <name>AnuKit - Java Helper Toolkit</name>
