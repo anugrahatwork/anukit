@@ -1,5 +1,6 @@
 package com.anugrahatwork.anukit.result;
 
+import com.anugrahatwork.anukit.AnuKit;
 import lombok.Getter;
 
 import java.util.Optional;
@@ -173,6 +174,19 @@ public class Result<T, E> {
 
         if (isNone()) throw new IllegalStateException("result is uninitialized: " + customMessage);
         throw wrapToException(error, customMessage);
+    }
+
+    /**
+     * Executes a side effect handler if the result is an error.
+     *
+     * @param handler the error consumer
+     * @return the same result instance for fluent chaining
+     */
+    public Result<T, E> onError(AnuKit.Callback<E> handler) {
+        if (isErr()) {
+            handler.call(error);
+        }
+        return this;
     }
 
     /**

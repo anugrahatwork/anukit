@@ -3,7 +3,9 @@ package com.anugrahatwork.anukit.result;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +39,18 @@ class ResultTest {
 
         RuntimeException thrown = assertThrows(RuntimeException.class, result::unwrapOrThrow);
         assertEquals("Error occurred", thrown.getMessage());
+    }
+
+    @Test
+    void testErrResult_withOnErrorHandling() {
+        AtomicBoolean isErrorHandled = new AtomicBoolean(false);
+        Result.err(new IllegalArgumentException("Invalid"), "Custom message").onError((error) -> {
+            if(Objects.nonNull(error)) {
+                isErrorHandled.set(true);
+            }
+        });
+
+        assertTrue(isErrorHandled.get());
     }
 
     @Test
