@@ -23,6 +23,13 @@ public class AnuKit {
     }
 
     /**
+     * A one-shot functional callback, typically for side effects.
+     */
+    public interface Callback<T> {
+        void call(T input);
+    }
+
+    /**
      * A supplier that can throw checked exceptions.
      */
     @FunctionalInterface
@@ -30,8 +37,17 @@ public class AnuKit {
         T get() throws Exception;
     }
 
+
     /**
-     * Functional interface representing a transformation on the Pipe value.
+     * Functional interface representing a Callback.
+     */
+    @FunctionalInterface
+    public interface SafeCallback<T> {
+        void call(T input);
+    }
+
+    /**
+     * Functional interface representing a transformation value.
      */
     @FunctionalInterface
     public interface SafeModifier<T> {

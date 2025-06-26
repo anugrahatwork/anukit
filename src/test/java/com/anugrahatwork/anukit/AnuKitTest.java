@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -98,6 +99,14 @@ class AnuKitTest {
     // ====== Functional Interface Tests ======
 
     @Test
+    void testCallback_interface() {
+        AtomicReference<String> checked = new AtomicReference<>("");
+        AnuKit.Callback<String> supplier = checked::set;
+        supplier.call("checked!");
+        assertEquals("checked!", checked.get());
+    }
+
+    @Test
     void testCheckedSupplier_interface() throws Exception {
         AnuKit.CheckedSupplier<String> supplier = () -> "checked!";
         assertEquals("checked!", supplier.get());
@@ -113,6 +122,14 @@ class AnuKitTest {
     void testSafeFunction_interface() throws Exception {
         AnuKit.SafeTransformer<String, Integer> safeFunc = Integer::parseInt;
         assertEquals(123, safeFunc.apply("123"));
+    }
+
+    @Test
+    void testSafeCallback_interface() {
+        AtomicReference<String> checked = new AtomicReference<>("");
+        AnuKit.SafeCallback<String> supplier = checked::set;
+        supplier.call("checked!");
+        assertEquals("checked!", checked.get());
     }
 
     @Test
